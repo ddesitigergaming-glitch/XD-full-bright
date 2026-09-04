@@ -1,28 +1,34 @@
-package com.example.fullbright.mixin;
+package com.example.fullbright;
 
-import com.example.fullbright.FullbrightChatMod;
-import net.minecraft.client.render.LightmapTextureManager;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.minecraft.text.Text;
+import net.minecraft.client.MinecraftClient;
 
-@Mixin(LightmapTextureManager.class)
-public class GameRendererMixin {
+public class FullbrightClient implements ClientModInitializer {
+    @Override
+    public void onInitializeClient() {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+            dispatcher.register(
+                ClientCommandManager.literal("on")
+                    .executes(context -> {
+                        FullbrightChatMod.setActive(true);
+                        var player = MinecraftClient.getInstance().player;
+                        if (player != null) player.sendMessage(Text.literal("Fullbright enabled"), false);
+                        return 1;
+                    })
+            );
 
-    @Inject(
-        method = "pack", 
-        at = @At("HEAD"), 
-        cancellable = true
-    )
-    private static void fullbright$packOverride(
-        int blockLight, 
-        int skyLight, 
-        CallbackInfoReturnable<Integer> cir
-    ) {
-        if (FullbrightChatMod.isActive()) {
-            // Mobile render engine ke liye light values ko direct maximum (15, 15) par force kar do
-            cir.setReturnValue((15 << 4) | 15);
-        }
+            dispatcher.register(
+                ClientCommandManager.literal("off")
+                    .executes(context -> {
+                        FullbrightChatMod.setActive(false);
+                        var player = MinecraftClient.getInstance().player;
+                        if (player != null) player.sendMessage(Text.literal("Fullbright disabled"), false);
+                        return 1;
+                    })
+            );
+        });
     }
 }
