@@ -10,10 +10,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LightmapTextureManager.class)
 public class GameRendererMixin {
 
-    // Minecraft ke rendering brightness calculations ko direct override karenge
-    @Inject(method = "getBrightness", at = @At("HEAD"), cancellable = true)
-    private static void fullbright$renderOverride(CallbackInfoReturnable<Float> info) {
-        // Agar aapne chat mein /on kiya hai, toh game ko hamesha full light render karne par majboor karo
+    @Inject(
+        method = "getBrightness", 
+        at = @At("HEAD"), 
+        cancellable = true
+    )
+    private void fullbright$renderOverride(
+        CallbackInfoReturnable<Float> info
+    ) {
         if (FullbrightChatMod.isActive()) {
             info.setReturnValue(100.0f);
         }
