@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-fullbright",
+  "version": "${version}",
+  "name": "My Custom Fullbright",
+  "description": "Simple client-side Fullbright with /on and /off commands.",
+  "authors": ["Me"],
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["com.example.fullbright.FullbrightChatMod"]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": "1.21.11",
+    "fabric-api": "*"
+  }
+}
