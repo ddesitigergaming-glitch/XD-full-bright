@@ -11,7 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
 
-    @Inject(method = "getNightVisionStrength", at = @At("HEAD"), cancellable = true)
+    // FullBright lighting hook
+    @Inject(
+        method = "getNightVisionStrength",
+        at = @At("HEAD"),
+        cancellable = true
+    )
     private static void fullbright$nightVision(
             LivingEntity entity,
             float tickProgress,
