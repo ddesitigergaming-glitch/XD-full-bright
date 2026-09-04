@@ -11,15 +11,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class GameRendererMixin {
 
     @Inject(
-        method = "getBrightness", 
+        method = "pack", 
         at = @At("HEAD"), 
         cancellable = true
     )
-    private void fullbright$renderOverride(
-        CallbackInfoReturnable<Float> info
+    private static void fullbright$packOverride(
+        int blockLight, 
+        int skyLight, 
+        CallbackInfoReturnable<Integer> cir
     ) {
         if (FullbrightChatMod.isActive()) {
-            info.setReturnValue(100.0f);
+            // Mobile render engine ke liye light values ko direct maximum (15, 15) par force kar do
+            cir.setReturnValue((15 << 4) | 15);
         }
     }
 }
